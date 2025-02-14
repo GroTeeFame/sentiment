@@ -74,3 +74,5 @@ node_modules/
 # Ignore compiled Python files
 *.egg-info/
 *.dist-info/
+
+*.xlsx
