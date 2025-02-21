@@ -62,21 +62,6 @@ def add_sender_column_from_excel(file_stream: BytesIO) -> pd.DataFrame:
     if df.iloc[0]['КЛІЄНТ'] == None:
         raise ValueError("Client name have 'None' value. Probably xlsx file is empty...")
 
-
-    print("<-------DF-------")
-    printd(df)
-    try:
-        # printd(df[0])
-        print('df.loc[[0]]')
-        printd(df.loc[[0]])
-        print('df.loc[0]')
-        printd(df.loc[0])
-        print("df.iloc[0]['КЛІЄНТ']")
-        printd(df.iloc[0]['КЛІЄНТ'])
-    except Exception as e:
-        print(f"Error occured: {e}")
-    print("-------DF------->")
-
     # Index for the conversation messages column
     conversation_column = 3
     # Define the RGB hex colors for customer and bot messages
@@ -221,9 +206,9 @@ def convert_json_to_ai_format(file_stream) -> List[List[Dict]]:
     if document:
         documents.append(document)
 
-    print('<-------DOCUMENTS-------')
-    printd(documents)
-    print('-------DOCUMENTS------->')
+    # print('<-------DOCUMENTS-------')
+    # printd(documents)
+    # print('-------DOCUMENTS------->')
 
     return documents
 
@@ -250,23 +235,28 @@ def create_text_analytics_client() -> TextAnalyticsClient:
 
     print("create_text_analytics_client")
 
-    # Load environment variables from a .env file
-    load_dotenv()
+    try:
+        # Load environment variables from a .env file
+        load_dotenv()
 
-    # Retrieve the endpoint and key for the Text Analytics service
-    language_endpoint = os.getenv("LANGUAGE_ENDPOINT")
-    language_key = os.getenv("LANGUAGE_KEY")
+        # Retrieve the endpoint and key for the Text Analytics service
+        language_endpoint = os.getenv("LANGUAGE_ENDPOINT")
+        language_key = os.getenv("LANGUAGE_KEY")
 
-    # Check if the necessary environment variables are set
-    if not language_endpoint or not language_key:
-        raise ValueError("Both LANGUAGE_ENDPOINT and LANGUAGE_KEY must be set as environment variables.")
+        # Check if the necessary environment variables are set
+        if not language_endpoint or not language_key:
+            raise ValueError("Both LANGUAGE_ENDPOINT and LANGUAGE_KEY must be set as environment variables.")
 
-    # Create the Text Analytics client
-    ta_credential = AzureKeyCredential(language_key)
-    text_analytics_client = TextAnalyticsClient(
-        endpoint=language_endpoint, 
-        credential=ta_credential
-    )
+        # Create the Text Analytics client
+        ta_credential = AzureKeyCredential(language_key)
+        text_analytics_client = TextAnalyticsClient(
+            endpoint=language_endpoint, 
+            credential=ta_credential
+        )
+    except Exception as e:
+        logging.error(f"ERROR: Can`t create Azure text resource.")
+        print(f"ERROR: Can`t create Azure text resource.")
+
     return text_analytics_client
 
 
