@@ -42,6 +42,7 @@ body {
 }
 .wrapper .grid-row .btn {
   width: 400px;
+  height: 42px;
   bottom: 2px;
   padding: 10px;
   background-color: rgb(200, 207, 158);
@@ -110,4 +111,70 @@ body {
   100% {
     background-position: 50% 0, 100% 0, 100% 100%, 0 100%;
   }
+}
+.container {
+  display: none;
+  position: relative;
+  background-color: #84181C;
+  width: 90vw;
+  height: 90vh;
+  border-radius: 20px;
+  overflow: auto;
+}
+
+.flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999; /* Ensure it's on top of other content */
+  padding: 20px;
+  text-align: center;
+  justify-content: center;
+}
+
+.flash-wrapper {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.warning {
+  margin: 10px;
+}
+
+.center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.close-all {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 10px;
+  cursor: pointer;
+  width: 400px;
+  height: 42px;
+  bottom: 2px;
+  padding: 10px;
+  margin-bottom: 50px;
+  background-color: #B43D43;
+  border-radius: 5px;
+  box-shadow: 0 4px #5B0E1B;
+  transition: none;
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: 500;
+  border: none;
+  font-family: "Oswald", serif;
+}
+.close-all:hover {
+  box-shadow: 0 2px #5B0E1B;
+  bottom: 0px;
 }/*# sourceMappingURL=styles.css.map */

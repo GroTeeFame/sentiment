@@ -24,7 +24,20 @@
         <div id="spinner"></div>
     </div>
     
+    </div>
 
+    <!-- flash message section START -->
+    <div class="flash container" id="flash-container">
+        <div class="center">
+
+            <div class="flash-wrapper" id="flash-wrapper">
+                <div class="warning" id="div-flash"></div>
+            </div>
+            <button type="button" class="close-all" onclick="removeAllFlash()">Закрити</button>
+            
+        </div>
+    </div>
+    <!-- flash message section END -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script>
@@ -70,8 +83,26 @@
             // document.getElementById('spinner').style.display = 'none';
             document.getElementById('download-btn').style.display = 'block';
             document.getElementById('loading').style.display = 'none'; //FIXME
+
+            if (response.messages) {
+                displayFlashMessages(response.messages);
+            }
             // document.getElementById('wrapper').style.display = 'grid';
 
+        });
+
+        myDropzone.on("error", function(file, response) {
+            // In case of an error, response might not be properly parsed, handle accordingly
+            let messages = [];
+            if (typeof response === 'string') {
+                messages.push(response);
+            } else if (response.messages) {
+                messages = response.messages;
+            }
+            if (messages.length > 0) {
+                displayFlashMessages(messages);
+            }
+            document.getElementById('loading').style.display = 'none'; // Hide loading spinner
         });
 
     </script>

@@ -1,8 +1,7 @@
 import os
 import sys
 import uuid
-import time
-from flask import Flask, request, send_file, render_template, session, flash, jsonify, redirect, url_for#, redirect, send_from_directory, url_for
+from flask import Flask, request, send_file, render_template, session#, redirect, send_from_directory, url_for
 from flask_dropzone import Dropzone
 
 import alp as alapi
@@ -31,14 +30,11 @@ dropzone = Dropzone(app)
 @app.route('/', methods=['POST', 'GET'])
 def upload():
     print("'/' route in app.py", file=sys.stderr)
-    # flash("'/' route in app.py")
-
     return render_template('index.html')
 
 @app.route('/analyze', methods=['POST'])
 async def analyze():
     print("'/analyze' route in app.py", file=sys.stderr)
-    flash("'/analyze' route in app.py")
 
     unique_filename = f"uploaded_file_{uuid.uuid4()}.xlsx"
     filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
@@ -58,30 +54,15 @@ async def analyze():
                 except Exception as e:
                     return str(e), 500
 
-    messages = []
     try:
-        print("'/analyze' trying to make call to API:", file=sys.stderr)
+        print("'/analyze' trying to make call to API:")
         with open(filepath, 'rb') as f:
             # response = requests.post("http://127.0.0.1:8000/orchestrate_full_analysis", files={"file": f})
 
             orchestrated_filename = f"DOWNLOADED_FILE_ORCHESTRATED_{uuid.uuid4()}.xlsx"
             orchestrated_filepath = os.path.join(UPLOAD_FOLDER, orchestrated_filename)
             
-            try:
-                response = await alapi.orchestrate_full_analysis(filepath, orchestrated_filepath)
-            except Exception as e:
-                # flash(str(e), 'error')
-                print(f"ERROR in backend: {e}", file=sys.stderr)
-                messages.append(str(e))
-                print(f"messages: {messages}")
-                return jsonify({'messages': messages, 'status': 'error'}), 500
-                # return redirect("/")
-                # return redirect("/analyze")
-                # time.sleep(3)
-                # return redirect(url_for('index'))
-                # return render_template('index.html')
-
-                # return render_template('index.html') #TODO: need to show user the ERROR, and reload page
+            response = await alapi.orchestrate_full_analysis(filepath, orchestrated_filepath)
 
         # if response.status_code == 200:
         if response["status_code"] == 200: #TODO: тре подумать, якась хуйня нє???

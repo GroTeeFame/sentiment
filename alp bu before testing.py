@@ -58,25 +58,6 @@ def add_sender_column_from_excel(file_stream: BytesIO) -> pd.DataFrame:
     # Convert the worksheet to a pandas DataFrame, dropping the index row
     df = pd.DataFrame(sheet.iter_rows(min_row=2, values_only=True), columns=original_columns)
 
-
-    if df.iloc[0]['КЛІЄНТ'] == None:
-        raise ValueError("Client name have 'None' value. Probably xlsx file is empty...")
-
-
-    print("<-------DF-------")
-    printd(df)
-    try:
-        # printd(df[0])
-        print('df.loc[[0]]')
-        printd(df.loc[[0]])
-        print('df.loc[0]')
-        printd(df.loc[0])
-        print("df.iloc[0]['КЛІЄНТ']")
-        printd(df.iloc[0]['КЛІЄНТ'])
-    except Exception as e:
-        print(f"Error occured: {e}")
-    print("-------DF------->")
-
     # Index for the conversation messages column
     conversation_column = 3
     # Define the RGB hex colors for customer and bot messages
@@ -220,10 +201,6 @@ def convert_json_to_ai_format(file_stream) -> List[List[Dict]]:
     # Append the last document if it exists
     if document:
         documents.append(document)
-
-    print('<-------DOCUMENTS-------')
-    printd(documents)
-    print('-------DOCUMENTS------->')
 
     return documents
 
@@ -653,11 +630,7 @@ async def orchestrate_full_analysis(file_path: str, output_path: str):
         raise Exception("Could not read file")
     
     # Processing: Adding sender information
-    try:
-        df = add_sender_column_from_excel(file_stream)
-    except Exception as e:
-        print(f"ERROR occured (te in orchestrate_full_analysis) : {e}")
-        raise
+    df = add_sender_column_from_excel(file_stream)
 
     buffer = BytesIO()
     try:
