@@ -46,11 +46,13 @@ def add_sender_column_from_excel(file_stream: BytesIO) -> pd.DataFrame:
     """
 
     print("add_sender_column_from_excel()")
+    logging.info("add_sender_column_from_excel()")
     # Load the workbook from BytesIO object
     try:
         wb = openpyxl.load_workbook(file_stream, data_only=True)
     except Exception as e:
         print(f"ERROR: {e}")
+        logging.error(f"ERROR: {e}")
         raise ValueError("Could not read the Excel file stream") from e
     sheet = wb.active
     # Get the headers from the first row
@@ -71,6 +73,7 @@ def add_sender_column_from_excel(file_stream: BytesIO) -> pd.DataFrame:
     # Check if conversation_column is within bounds
     if conversation_column >= len(original_columns):
         print("ERROR: The conversation column index is out of bounds.")
+        logging.error("ERROR: The conversation column index is out of bounds.")
         raise ValueError("The conversation column index is out of bounds.")
 
     # List to store sender information
@@ -121,6 +124,7 @@ def xlsx_to_json(file_stream: BytesIO) -> List[Dict]:
     """
 
     print("xlsx_to_json")
+    logging.info("xlsx_to_json")
 
     # Read the Excel file into a DataFrame
     try:
@@ -165,6 +169,7 @@ def convert_json_to_ai_format(file_stream) -> List[List[Dict]]:
     """
     
     print("convert_json_to_ai_format")
+    logging.info("convert_json_to_ai_format")
 
     # Load data depending on the input type
     if isinstance(file_stream, list):
@@ -284,6 +289,7 @@ def analyze_sentiment_with_summary(client: TextAnalyticsClient, documents: List[
     """
 
     print("analyze_sentiment_with_summary")
+    logging.info("analyze_sentiment_with_summary")
 
     list_of_results = []
     
@@ -333,6 +339,12 @@ def analyze_sentiment_with_summary(client: TextAnalyticsClient, documents: List[
         print(f"Av negative : {average_negative:.2f}")
         print(f"Overall Sentiment for Conversation: {overall_sentiment}")
         print('------------------------------------------------------------')
+        logging.info('------------------------------------------------------------')
+        logging.info(f"Av positive : {average_positive:.2f}")
+        logging.info(f"Av neutral : {average_neutral:.2f}")
+        logging.info(f"Av negative : {average_negative:.2f}")
+        logging.info(f"Overall Sentiment for Conversation: {overall_sentiment}")
+        logging.info('------------------------------------------------------------')
 
     return list_of_results
     # return result
@@ -367,6 +379,7 @@ def split_into_batches(documents: List[Dict], batch_size: int = 10) -> List[List
     """
 
     print("split_into_batches")
+    logging.info("split_into_batches")
 
     # Validate batch size
     if not isinstance(batch_size, int) or batch_size <= 0:
@@ -406,6 +419,7 @@ def analyze_sentiment_in_batches(client: TextAnalyticsClient, batches: List[List
     It collects the results from each batch and returns them as a list of results.
     """
     print("-----analyze_sentiment_in_batches-----")
+    logging.info("-----analyze_sentiment_in_batches-----")
     batches_result = []
 
     # Process each batch of documents
@@ -613,7 +627,9 @@ def format_and_save_sentiment_plus(combined_data: dict, output_path: str):
     try:
         wb.save(output_path)
         print(f"File saved to {output_path}")
+        logging.info(f"File saved to {output_path}")
     except Exception as e:
+        print("Error saving the workbook: %s", e)
         logging.error("Error saving the workbook: %s", e)
         raise Exception("Error saving the Excel file")
 
@@ -647,6 +663,7 @@ async def orchestrate_full_analysis(file_path: str, output_path: str):
         df = add_sender_column_from_excel(file_stream)
     except Exception as e:
         print(f"ERROR occured (te in orchestrate_full_analysis) : {e}")
+        logging.error(f"ERROR occured (te in orchestrate_full_analysis) : {e}")
         raise
 
     buffer = BytesIO()
@@ -655,6 +672,7 @@ async def orchestrate_full_analysis(file_path: str, output_path: str):
             df.to_excel(writer, index=False)
     except Exception as e:
         print(f"!!!ERROR: {e}")
+        logging.error(f"!!!ERROR: {e}")
     buffer.seek(0)
 
     # Convert Excel to JSON
