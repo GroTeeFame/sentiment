@@ -26,6 +26,12 @@ app.config.update(
     DROPZONE_UPLOAD_ON_CLICK=True,
 )
 
+handler = logging.FileHandler('app.log')
+handler.setLevel(logging.INFO)
+handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s : %(message)s'))
+
+app.logger.addHandler(handler)
+
 dropzone = Dropzone(app)
 
 
