@@ -295,7 +295,11 @@ def analyze_sentiment_with_summary(client: TextAnalyticsClient, documents: List[
     
     # Perform sentiment analysis on the documents
     try:
+        print("before 'result = client.analyze_sentiment(documents)'")
+        logging.info("before 'result = client.analyze_sentiment(documents)'")
         result = client.analyze_sentiment(documents)
+        print("after 'result = client.analyze_sentiment(documents)'")
+        logging.info("after 'result = client.analyze_sentiment(documents)'")
     except Exception as e:
         print(f"Sentiment analysis failed: {e}")
         logging.error(f"Sentiment analysis failed: {e}")

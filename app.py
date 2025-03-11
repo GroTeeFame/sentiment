@@ -26,11 +26,20 @@ app.config.update(
     DROPZONE_UPLOAD_ON_CLICK=True,
 )
 
-handler = logging.FileHandler('app.log')
-handler.setLevel(logging.INFO)
-handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s : %(message)s'))
+# logger = logging.getLogger('app_logger')  # Use a named logger
+# handler = logging.FileHandler('app.log')
+# handler.setLevel(logging.INFO)
+# handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s : %(message)s'))
+# logger.addHandler(handler)
+# logger.setLevel(logging.INFO) 
 
-app.logger.addHandler(handler)
+# logger = logging.getLogger('app_logger') 
+# handler = logging.FileHandler('app.log')
+# handler.setLevel(logging.INFO)
+# handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s : %(message)s'))
+
+# app.logger.addHandler(handler)
+
 
 dropzone = Dropzone(app)
 
@@ -39,6 +48,7 @@ dropzone = Dropzone(app)
 def upload():
     print("'/' route in app.py", file=sys.stderr)
     logging.info("'/' route in app.py")
+    app.logging.info("'/' route in app.py")
     # flash("'/' route in app.py")
 
     return render_template('index.html')
@@ -47,6 +57,7 @@ def upload():
 async def analyze():
     print("'/analyze' route in app.py", file=sys.stderr)
     logging.info("'/analyze' route in app.py")
+    app.logging.info("'/analyze' route in app.py")
     flash("'/analyze' route in app.py")
 
     unique_filename = f"uploaded_file_{uuid.uuid4()}.xlsx"
@@ -58,10 +69,12 @@ async def analyze():
         # print("----------------------------------", file=sys.stderr)
         print("'/analyze' route in app.py - if request.method == 'POST':", file=sys.stderr)
         logging.info("'/analyze' route in app.py - if request.method == 'POST':")
+        app.logging.info("'/analyze' route in app.py - if request.method == 'POST':")
         for key, f in request.files.items():
             if key.startswith('file'):
                 print("'/analyze' route in app.py - if key.startswith('file'):", file=sys.stderr)
                 logging.info("'/analyze' route in app.py - if key.startswith('file'):")
+                app.logging.info("'/analyze' route in app.py - if key.startswith('file'):")
                 file = f
                 try:
                     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -73,6 +86,7 @@ async def analyze():
     try:
         print("'/analyze' trying to make call to API:", file=sys.stderr)
         logging.info("'/analyze' trying to make call to API:")
+        app.logging.info("'/analyze' trying to make call to API:")
         with open(filepath, 'rb') as f:
             # response = requests.post("http://127.0.0.1:8000/orchestrate_full_analysis", files={"file": f})
 
@@ -85,9 +99,11 @@ async def analyze():
                 # flash(str(e), 'error')
                 print(f"ERROR in backend: {e}", file=sys.stderr)
                 logging.info(f"ERROR in backend: {e}")
+                app.logging.info(f"ERROR in backend: {e}")
                 messages.append(str(e))
                 print(f"messages: {messages}")
                 logging.info(f"messages: {messages}")
+                app.logging.info(f"messages: {messages}")
                 return jsonify({'messages': messages, 'status': 'error'}), 500
 
         # if response.status_code == 200:
@@ -110,14 +126,17 @@ async def analyze():
 def download():
     print("/download route in app.py", file=sys.stderr)
     logging.info("/download route in app.py")
+    app.logging.info("/download route in app.py")
 
     uploaded_filepath = session.get('uploaded_filepath')
     orchestrated_filepath = session.get('orchestrated_filepath')
     filename = session.get('filename')
     print(f"filename in '/download': {filename}", file=sys.stderr)
     logging.info(f"filename in '/download': {filename}")
+    app.logging.info(f"filename in '/download': {filename}")
     print(f"orchestrated_filepath in '/download': {orchestrated_filepath}", file=sys.stderr)
     logging.info(f"orchestrated_filepath in '/download': {orchestrated_filepath}")
+    app.logging.info(f"orchestrated_filepath in '/download': {orchestrated_filepath}")
 
     file_to_send = orchestrated_filepath
 
@@ -131,8 +150,10 @@ def download():
 
     print('------deleting orchestrated_filepath------', file=sys.stderr)
     logging.info('------deleting orchestrated_filepath------')
+    app.logging.info('------deleting orchestrated_filepath------')
     os.remove(orchestrated_filepath)
     logging.info('------deleting uploaded_filepath------')
+    app.logging.info('------deleting uploaded_filepath------')
     os.remove(uploaded_filepath)
     return response
 
